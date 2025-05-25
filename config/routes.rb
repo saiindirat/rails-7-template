@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
+  # Devise routes for user sign up / sign in / etc
+  devise_for :users
 
-  # This is a blank app! Pick your first screen, build out the RCAV, and go from there. E.g.:
+  # Root path should show the list of rides
+  root to: "rides#index"
 
-  # get "/your_first_screen" => "pages#first"
-  
+  # RESTful routes for rides
+  resources :rides
 end

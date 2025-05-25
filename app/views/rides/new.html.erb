@@ -1,0 +1,25 @@
+<h1>Post a New Ride</h1>
+
+<%= form_with url: "/rides", method: "post" do %>
+  <p>
+    <%= label_tag :location %><br>
+    <%= text_field_tag :location %>
+  </p>
+
+  <p>
+    <%= label_tag :departure_time %><br>
+    <%= datetime_select :ride, :departure_time %>
+  </p>
+
+  <p>
+    <%= label_tag :map_url %><br>
+    <%= text_field_tag :map_url %>
+  </p>
+
+  <p>
+    <%= label_tag :available_seats %><br>
+    <%= number_field_tag :available_seats %>
+  </p>
+
+  <%= submit_tag "Post Ride" %>
+<% end %>

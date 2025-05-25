@@ -1,0 +1,8 @@
+<h1>Ride Details</h1>
+
+<p><strong>Location:</strong> <%= @ride.location %></p>
+<p><strong>Departure Time:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") %></p>
+<p><strong>Seats Available:</strong> <%= @ride.available_seats %></p>
+<p><strong>Map:</strong> <%= link_to "View Map", @ride.map_url, target: "_blank" %></p>
+
+<%= link_to "Back to Rides", rides_path %>
