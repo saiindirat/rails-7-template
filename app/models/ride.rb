@@ -18,4 +18,15 @@ class Ride < ApplicationRecord
   belongs_to :user
   has_many :ride_participants, dependent: :destroy
   has_many :passengers, through: :ride_participants, source: :user
+
+  # Number of people who have joined the ride
+  def spots_taken
+    passengers.count
+  end
+
+  # Remaining seats = total - taken
+  def seats_remaining
+    available_seats - spots_taken
+  end
 end
+

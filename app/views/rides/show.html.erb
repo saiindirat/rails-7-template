@@ -5,7 +5,15 @@
     <p><strong>From:</strong> <%= @ride.origin.presence || "Not provided" %></p>
     <p><strong>To:</strong> <%= @ride.destination.presence || "Not provided" %></p>
     <p><strong>Departure:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") rescue "Not set" %></p>
-    <p><strong>Seats:</strong> <%= @ride.available_seats || "N/A" %></p>
+
+    <p><strong>🪑 Seats:</strong>
+      <%= @ride.available_seats %> total
+      <span style="margin: 0 8px;">🔒</span>
+      <%= @ride.spots_taken %> taken
+      <span style="margin: 0 8px;">✅</span>
+      <%= @ride.seats_remaining %> remaining
+    </p>
+
     <p><strong>Posted by:</strong> <%= @ride.user&.email || "Unknown" %></p>
     <p><strong>Notes:</strong> <%= @ride.notes.presence || "None" %></p>
   </div>
@@ -28,7 +36,11 @@
       <% if @ride.passengers.include?(current_user) %>
         <%= button_to "Leave Ride", ride_participant_path(ride_id: @ride.id), method: :delete, style: "padding: 10px 16px; background-color: #ffc107; color: black; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
       <% else %>
-        <%= button_to "Join Ride", ride_participants_path(ride_id: @ride.id), method: :post, style: "padding: 10px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
+        <% if @ride.seats_remaining > 0 %>
+          <%= button_to "Join Ride", ride_participants_path(ride_id: @ride.id), method: :post, style: "padding: 10px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
+        <% else %>
+          <p style="color: red; font-weight: bold;">No seats remaining.</p>
+        <% end %>
       <% end %>
     </div>
   <% else %>

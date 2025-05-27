@@ -7,7 +7,7 @@
     background: #f4f7fa;
   }
 
-  .signup-container {
+  .ride-form-container {
     max-width: 500px;
     margin: 80px auto;
     background-color: #fff;
@@ -16,7 +16,7 @@
     box-shadow: 0 10px 25px rgba(0,0,0,0.07);
   }
 
-  .signup-container h2 {
+  .ride-form-container h2 {
     text-align: center;
     font-size: 2rem;
     margin-bottom: 24px;
@@ -32,7 +32,9 @@
     margin-bottom: 6px;
   }
 
-  .form-group input {
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
     width: 100%;
     padding: 10px;
     font-size: 1rem;
@@ -54,52 +56,50 @@
     border-radius: 6px;
     cursor: pointer;
   }
-
-  .form-footer {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .form-footer a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 500;
-  }
 </style>
 
-<div class="signup-container">
-  <h2>🚀 Sign up</h2>
+<div class="ride-form-container">
+  <h2>🚘 Post a New Ride</h2>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-    <%= devise_error_messages! %>
+  <%= form_with model: @ride, local: true do |f| %>
+    <% if @ride.errors.any? %>
+      <div style="background-color: #ffe0e0; padding: 16px; border-radius: 6px; margin-bottom: 20px;">
+        <strong><%= pluralize(@ride.errors.count, "error") %>:</strong>
+        <ul>
+          <% @ride.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
     <div class="form-group">
-      <%= f.label :name %>
-      <%= f.text_field :name, required: true %>
+      <%= f.label :origin, "From" %>
+      <%= f.text_field :origin, required: true %>
     </div>
 
     <div class="form-group">
-      <%= f.label :email %>
-      <%= f.email_field :email, required: true %>
+      <%= f.label :destination, "To" %>
+      <%= f.text_field :destination, required: true %>
     </div>
 
     <div class="form-group">
-      <%= f.label :password %>
-      <%= f.password_field :password, autocomplete: "new-password", required: true %>
-      <small>6 characters minimum</small>
+      <%= f.label :departure_time, "Departure Time" %>
+      <%= f.datetime_select :departure_time, required: true %>
     </div>
 
     <div class="form-group">
-      <%= f.label :password_confirmation %>
-      <%= f.password_field :password_confirmation, required: true %>
+      <%= f.label :available_seats, "Number of Seats" %>
+      <%= f.number_field :available_seats, min: 1, required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :notes, "Notes (optional)" %>
+      <%= f.text_area :notes, placeholder: "Any luggage info, pickup details, etc." %>
     </div>
 
     <div class="form-actions">
-      <%= f.submit "Sign up" %>
+      <%= f.submit "Post Ride" %>
     </div>
   <% end %>
-
-  <div class="form-footer">
-    <%= link_to "Already have an account? Log in", new_session_path(resource_name) %>
-  </div>
 </div>

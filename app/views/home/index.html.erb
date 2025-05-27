@@ -1,20 +1,88 @@
-<!-- app/views/home/index.html.erb -->
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
-<div style="max-width: 700px; margin: 0 auto; text-align: center; padding-top: 50px;">
-  <h1 style="font-size: 3em; font-weight: bold; margin-bottom: 10px;">
-    Booth Ride Share
-  </h1>
+<style>
+  body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+    height: 100%;
+  }
 
-  <p style="font-size: 1.2em; color: #444; margin-bottom: 30px;">
-    Coordinating rides to Booth just got easier. Whether you're headed to the Harper Center or riding from downtown, find or offer rides with fellow Booth and UChicago students in seconds.
-  </p>
+  .hero {
+    position: relative;
+    background: url('/assets/booth_home.jpg') no-repeat center center fixed;
+    background-size: cover;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 
-  <% if user_signed_in? %>
-    <p>Welcome, <strong><%= current_user.name %></strong>!</p>
-    <%= link_to "Go to Rides", rides_path, class: "btn btn-primary", style: "font-size: 1.1em; padding: 10px 20px;" %>
-  <% else %>
-    <div style="margin-top: 30px;">
-      <%= link_to "Sign Up to Get Started", new_user_registration_path, class: "btn btn-success", style: "font-size: 1.2em; padding: 12px 25px;" %>
-    </div>
-  <% end %>
+  .overlay {
+    background-color: rgba(0, 0, 0, 0.65); /* semi-faded image */
+    padding: 80px 20px;
+    text-align: center;
+    color: white;
+    max-width: 800px;
+    margin: auto;
+    border-radius: 12px;
+  }
+
+  .overlay h1 {
+    font-size: 3.5em;
+    font-weight: 800;
+    margin-bottom: 24px;
+  }
+
+  .overlay p {
+    font-size: 1.3em;
+    font-weight: 400;
+    margin-bottom: 36px;
+    line-height: 1.6;
+  }
+
+  .cta-button {
+    background-color: #ff4c4c;
+    color: white;
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 14px 30px;
+    border: none;
+    border-radius: 8px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+  }
+
+  .cta-button:hover {
+    background-color: #cc0000;
+  }
+
+  @media (max-width: 600px) {
+    .overlay h1 {
+      font-size: 2em;
+    }
+
+    .overlay p {
+      font-size: 1em;
+    }
+
+    .cta-button {
+      padding: 12px 24px;
+      font-size: 1em;
+    }
+  }
+</style>
+
+<div class="hero">
+  <div class="overlay">
+    <h1>Booth Ride Share</h1>
+    <p>Coordinating rides to Booth just got easier. Whether you're headed to Harper or coming from downtown, find or offer rides with fellow Boothies in seconds.</p>
+
+    <% if user_signed_in? %>
+      <%= link_to "Explore Rides", rides_path, class: "cta-button" %>
+    <% else %>
+      <%= link_to "Sign Up to Get Started", new_user_registration_path, class: "cta-button" %>
+    <% end %>
+  </div>
 </div>

@@ -67,7 +67,11 @@
 
   th {
     background-color: #f9f9f9;
-    text-align: left;
+    text-align: center;
+  }
+
+  td {
+    text-align: center;
   }
 
   tr:hover {
@@ -100,8 +104,10 @@
         <th>📍 From</th>
         <th>🏁 To</th>
         <th>🕒 Departure</th>
-        <th style="text-align: center;">🪑 Seats</th>
-        <th style="text-align: center;">🔎 View</th>
+        <th>🪑 Total</th>
+        <th>✅ Taken</th>
+        <th>🟢 Remaining</th>
+        <th>🔎 View</th>
       </tr>
     </thead>
     <tbody>
@@ -110,8 +116,10 @@
           <td><%= ride.origin.presence || "—" %></td>
           <td><%= ride.destination.presence || "—" %></td>
           <td><%= ride.departure_time.strftime("%A %d %b, %I:%M %p") %></td>
-          <td style="text-align: center;"><%= ride.available_seats %></td>
-          <td style="text-align: center;">
+          <td><%= ride.available_seats %></td>
+          <td><%= ride.spots_taken %></td>
+          <td><%= ride.seats_remaining %></td>
+          <td>
             <%= link_to "View", ride_path(ride), class: "btn btn-success", style: "padding: 6px 12px;" %>
           </td>
         </tr>
@@ -119,4 +127,3 @@
     </tbody>
   </table>
 </div>
-

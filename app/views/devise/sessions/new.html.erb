@@ -1,20 +1,125 @@
-<h2>Log in</h2>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Log in</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url(<%= asset_path("chicago_traffic.jpg") %>) no-repeat center center fixed;
+      background-size: cover;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-<%= simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="form-inputs">
-    <%= f.input :email,
-                required: false,
-                autofocus: true,
-                input_html: { autocomplete: "email" } %>
-    <%= f.input :password,
-                required: false,
-                input_html: { autocomplete: "current-password" } %>
-    <%= f.input :remember_me, as: :boolean if devise_mapping.rememberable? %>
+    .login-container {
+      background-color: rgba(255, 255, 255, 0.92);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      text-align: center;
+    }
+
+    .login-container h2 {
+      font-size: 2em;
+      margin-bottom: 30px;
+      font-weight: bold;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    input[type="email"],
+    input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1em;
+    }
+
+    .actions input[type="submit"] {
+      background-color: #007bff;
+      color: white;
+      font-weight: bold;
+      border: none;
+      width: 100%;
+      padding: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    .actions input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .links {
+      margin-top: 20px;
+      font-size: 0.95em;
+    }
+
+    .links a {
+      color: #6a1b9a;
+      text-decoration: underline;
+      display: block;
+      margin: 8px 0;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: center;
+      margin: 8px 0 18px 0;
+      font-size: 0.95em;
+    }
+
+    .checkbox input {
+      margin-right: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h2>🔐 Log In</h2>
+
+    <%= form_with scope: resource_name, url: session_path(resource_name), method: :post, local: true do |f| %>
+      <div class="form-group">
+        <%= f.label :email, "Email" %>
+        <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :password, "Password" %>
+        <%= f.password_field :password, autocomplete: "current-password" %>
+      </div>
+
+      <div class="checkbox">
+        <%= f.check_box :remember_me %>
+        <%= f.label :remember_me, "Remember me" %>
+      </div>
+
+      <div class="actions">
+        <%= f.submit "Log in" %>
+      </div>
+    <% end %>
+
+    <div class="links">
+      <%= link_to "Sign up", new_registration_path(resource_name) %>
+      <%= link_to "Forgot your password?", new_password_path(resource_name) %>
+    </div>
   </div>
-
-  <div class="form-actions">
-    <%= f.button :submit, "Log in" %>
-  </div>
-<% end %>
-
-<%= render "devise/shared/links" %>
+</body>
+</html>
