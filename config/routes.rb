@@ -8,6 +8,9 @@ Rails.application.routes.draw do
   # RESTful routes for rides
   resources :rides
 
+  # Routes for joining/leaving rides
+  resources :ride_participants, only: [:create, :destroy]
+
   # Explicit route for home controller
-  get("/home", { to: "home#index" })
+  get "/home", to: "home#index"
 end

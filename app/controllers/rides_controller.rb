@@ -1,20 +1,16 @@
 class RidesController < ApplicationController
-  # Only require login for actions that need it
   before_action :authenticate_user!, only: [:new, :create, :destroy]
+  before_action :set_ride, only: [:show, :destroy]
 
   def index
     @rides = Ride.order(departure_time: :asc)
-    render template: "rides/index"
   end
 
   def show
-    @ride = Ride.find(params.fetch(:id))
-    render template: "rides/show"
   end
 
   def new
     @ride = Ride.new
-    render template: "rides/new"
   end
 
   def create
@@ -22,23 +18,27 @@ class RidesController < ApplicationController
     @ride.user_id = current_user.id
 
     if @ride.save
-      redirect_to("/rides/#{@ride.id}", notice: "Ride posted successfully!")
+      redirect_to @ride, notice: "Ride posted successfully!"
     else
-      render :new, alert: "Ride failed to post."
+      flash.now[:alert] = "Ride failed to post."
+      render :new
     end
   end
 
   def destroy
-    @ride = Ride.find(params.fetch(:id))
     if @ride.user_id == current_user.id
       @ride.destroy
-      redirect_to("/rides", notice: "Ride deleted.")
+      redirect_to rides_path, notice: "Ride deleted."
     else
-      redirect_to("/rides", alert: "Not authorized to delete this ride.")
+      redirect_to rides_path, alert: "Not authorized to delete this ride."
     end
   end
 
   private
+
+  def set_ride
+    @ride = Ride.find(params[:id])
+  end
 
   def ride_params
     params.require(:ride).permit(
@@ -46,6 +46,7 @@ class RidesController < ApplicationController
       :destination,
       :departure_time,
       :available_seats,
+      :map_url,       # <--- added this
       :notes
     )
   end

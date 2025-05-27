@@ -1,25 +1,45 @@
-<h1>Post a New Ride</h1>
+<div style="max-width: 600px; margin: 40px auto; font-family: sans-serif; padding: 32px; border: 1px solid #ddd; border-radius: 10px; background-color: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
+  <h1 style="font-size: 2em; margin-bottom: 24px;">📝 Post a New Ride</h1>
 
-<%= form_with url: "/rides", method: "post" do %>
-  <p>
-    <%= label_tag :location %><br>
-    <%= text_field_tag :location %>
-  </p>
+  <%= form_with model: @ride, local: true do |form| %>
+    <% if @ride.errors.any? %>
+      <div style="margin-bottom: 20px; background: #ffe0e0; padding: 10px 16px; border-radius: 6px; border: 1px solid #ffcccc;">
+        <strong><%= pluralize(@ride.errors.count, "error") %>:</strong>
+        <ul style="margin-top: 6px;">
+          <% @ride.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
-  <p>
-    <%= label_tag :departure_time %><br>
-    <%= datetime_select :ride, :departure_time %>
-  </p>
+    <div style="margin-bottom: 16px;">
+      <%= form.label :origin, "From", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
+      <%= form.text_field :origin, required: true, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" %>
+    </div>
 
-  <p>
-    <%= label_tag :map_url %><br>
-    <%= text_field_tag :map_url %>
-  </p>
+    <div style="margin-bottom: 16px;">
+      <%= form.label :destination, "To", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
+      <%= form.text_field :destination, required: true, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" %>
+    </div>
 
-  <p>
-    <%= label_tag :available_seats %><br>
-    <%= number_field_tag :available_seats %>
-  </p>
+    <div style="margin-bottom: 16px;">
+      <%= form.label :departure_time, "Departure Time", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
+      <%= form.datetime_select :departure_time, required: true, style: "padding: 6px;" %>
+    </div>
 
-  <%= submit_tag "Post Ride" %>
-<% end %>
+    <div style="margin-bottom: 16px;">
+      <%= form.label :map_url, "Map URL (optional)", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
+      <%= form.text_field :map_url, placeholder: "Google Maps link (optional)", style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" %>
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <%= form.label :available_seats, "Available Seats", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
+      <%= form.number_field :available_seats, min: 1, required: true, style: "width: 100px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" %>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <%= form.submit "Post Ride", style: "background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;" %>
+    </div>
+  <% end %>
+</div>
