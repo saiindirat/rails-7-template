@@ -1,45 +1,105 @@
-<div style="max-width: 600px; margin: 40px auto; font-family: sans-serif; padding: 32px; border: 1px solid #ddd; border-radius: 10px; background-color: #fff; box-shadow: 0 2px 12px rgba(0,0,0,0.06);">
-  <h1 style="font-size: 2em; margin-bottom: 24px;">📝 Post a New Ride</h1>
+<!-- Google Fonts & Styling -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-  <%= form_with model: @ride, local: true do |form| %>
-    <% if @ride.errors.any? %>
-      <div style="margin-bottom: 20px; background: #ffe0e0; padding: 10px 16px; border-radius: 6px; border: 1px solid #ffcccc;">
-        <strong><%= pluralize(@ride.errors.count, "error") %>:</strong>
-        <ul style="margin-top: 6px;">
-          <% @ride.errors.full_messages.each do |message| %>
-            <li><%= message %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f7fa;
+  }
 
-    <div style="margin-bottom: 16px;">
-      <%= form.label :origin, "From", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
-      <%= form.text_field :origin, required: true, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" %>
+  .signup-container {
+    max-width: 500px;
+    margin: 80px auto;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+  }
+
+  .signup-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .form-actions {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .form-actions input {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .form-footer {
+    text-align: center;
+    margin-top: 20px;
+  }
+
+  .form-footer a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+  }
+</style>
+
+<div class="signup-container">
+  <h2>🚀 Sign up</h2>
+
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
+    <%= devise_error_messages! %>
+
+    <div class="form-group">
+      <%= f.label :name %>
+      <%= f.text_field :name, required: true %>
     </div>
 
-    <div style="margin-bottom: 16px;">
-      <%= form.label :destination, "To", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
-      <%= form.text_field :destination, required: true, style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" %>
+    <div class="form-group">
+      <%= f.label :email %>
+      <%= f.email_field :email, required: true %>
     </div>
 
-    <div style="margin-bottom: 16px;">
-      <%= form.label :departure_time, "Departure Time", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
-      <%= form.datetime_select :departure_time, required: true, style: "padding: 6px;" %>
+    <div class="form-group">
+      <%= f.label :password %>
+      <%= f.password_field :password, autocomplete: "new-password", required: true %>
+      <small>6 characters minimum</small>
     </div>
 
-    <div style="margin-bottom: 16px;">
-      <%= form.label :map_url, "Map URL (optional)", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
-      <%= form.text_field :map_url, placeholder: "Google Maps link (optional)", style: "width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px;" %>
+    <div class="form-group">
+      <%= f.label :password_confirmation %>
+      <%= f.password_field :password_confirmation, required: true %>
     </div>
 
-    <div style="margin-bottom: 16px;">
-      <%= form.label :available_seats, "Available Seats", style: "display: block; font-weight: bold; margin-bottom: 4px;" %>
-      <%= form.number_field :available_seats, min: 1, required: true, style: "width: 100px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" %>
-    </div>
-
-    <div style="margin-top: 24px;">
-      <%= form.submit "Post Ride", style: "background-color: #007bff; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold;" %>
+    <div class="form-actions">
+      <%= f.submit "Sign up" %>
     </div>
   <% end %>
+
+  <div class="form-footer">
+    <%= link_to "Already have an account? Log in", new_session_path(resource_name) %>
+  </div>
 </div>
