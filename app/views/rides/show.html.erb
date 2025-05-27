@@ -1,8 +1,25 @@
 <h1>Ride Details</h1>
 
-<p><strong>Location:</strong> <%= @ride.location %></p>
-<p><strong>Departure Time:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") %></p>
-<p><strong>Seats Available:</strong> <%= @ride.available_seats %></p>
-<p><strong>Map:</strong> <%= link_to "View Map", @ride.map_url, target: "_blank" %></p>
+<p>
+  <strong>From:</strong> <%= @ride.origin %><br>
+  <strong>To:</strong> <%= @ride.destination %><br>
+  <strong>Departure:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") %><br>
+  <strong>Seats:</strong> <%= @ride.available_seats %><br>
+  <strong>Posted by:</strong> <%= @ride.user.email %><br>
+  <strong>Notes:</strong> <%= @ride.notes %>
+</p>
 
-<%= link_to "Back to Rides", rides_path %>
+<h3>Passengers:</h3>
+<ul>
+  <% @ride.passengers.each do |p| %>
+    <li><%= p.email %></li>
+  <% end %>
+</ul>
+
+<% if user_signed_in? %>
+  <% if @ride.passengers.include?(current_user) %>
+    <%= button_to "Leave Ride", ride_participant_path(ride_id: @ride.id), method: :delete %>
+  <% else %>
+    <%= button_to "Join Ride", ride_participants_path(ride_id: @ride.id), method: :post %>
+  <% end %>
+<% end %>

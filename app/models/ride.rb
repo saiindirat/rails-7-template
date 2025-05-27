@@ -13,8 +13,6 @@
 #
 class Ride < ApplicationRecord
   belongs_to :user
-
-  validates :location, presence: true
-  validates :departure_time, presence: true
-  validates :available_seats, numericality: { only_integer: true, greater_than: 0 }
+  has_many :ride_participants, dependent: :destroy
+  has_many :passengers, through: :ride_participants, source: :user
 end

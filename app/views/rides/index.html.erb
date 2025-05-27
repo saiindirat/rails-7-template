@@ -9,13 +9,10 @@
 <ul>
   <% @rides.each do |ride| %>
     <li>
-      <strong><%= ride.location %></strong><br>
+      <strong><%= ride.origin %> → <%= ride.destination %></strong><br>
       Departure: <%= ride.departure_time.strftime("%A %d %b, %I:%M %p") %><br>
       Seats: <%= ride.available_seats %><br>
       <%= link_to "View", ride_path(ride) %>
-      <% if user_signed_in? && ride.user_id == current_user.id %>
-        | <%= link_to "Delete", ride_path(ride), method: :delete, data: { confirm: "Are you sure?" } %>
-      <% end %>
     </li>
   <% end %>
 </ul>
