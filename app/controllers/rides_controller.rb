@@ -18,17 +18,13 @@ class RidesController < ApplicationController
   end
 
   def create
-    @ride = Ride.new
+    @ride = Ride.new(ride_params)
     @ride.user_id = current_user.id
-    @ride.location = params.fetch("location")
-    @ride.departure_time = params.fetch("departure_time")
-    @ride.map_url = params.fetch("map_url")
-    @ride.available_seats = params.fetch("available_seats")
 
     if @ride.save
       redirect_to("/rides/#{@ride.id}", notice: "Ride posted successfully!")
     else
-      redirect_to("/rides", alert: "Ride failed to post.")
+      render :new, alert: "Ride failed to post."
     end
   end
 
@@ -40,5 +36,17 @@ class RidesController < ApplicationController
     else
       redirect_to("/rides", alert: "Not authorized to delete this ride.")
     end
+  end
+
+  private
+
+  def ride_params
+    params.require(:ride).permit(
+      :origin,
+      :destination,
+      :departure_time,
+      :available_seats,
+      :notes
+    )
   end
 end

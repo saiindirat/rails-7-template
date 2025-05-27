@@ -5,8 +5,11 @@
 #  id              :bigint           not null, primary key
 #  available_seats :integer
 #  departure_time  :datetime
+#  destination     :string
 #  location        :string
 #  map_url         :string
+#  notes           :text
+#  origin          :string
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  user_id         :integer

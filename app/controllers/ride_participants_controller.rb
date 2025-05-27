@@ -9,7 +9,7 @@ class RideParticipantsController < ApplicationController
 
   def destroy
     ride_participant = current_user.ride_participants.find_by(ride_id: params[:ride_id])
-    ride_participant.destroy
+    ride_participant.destroy if ride_participant.present?
     redirect_to ride_path(params[:ride_id]), notice: "You left the ride."
   end
 end
