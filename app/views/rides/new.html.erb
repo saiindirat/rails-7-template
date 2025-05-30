@@ -1,49 +1,128 @@
-<div style="max-width: 700px; margin: 40px auto; font-family: sans-serif; padding: 24px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background-color: #fff;">
-  <h1 style="font-size: 2em; margin-bottom: 20px;">🚗 Ride Details</h1>
+<!-- Google Fonts & Styling -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
-  <div style="line-height: 1.8; font-size: 1.1em;">
-    <p><strong>From:</strong> <%= @ride.origin.presence || "Not provided" %></p>
-    <p><strong>To:</strong> <%= @ride.destination.presence || "Not provided" %></p>
-    <p><strong>Departure:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") rescue "Not set" %></p>
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f7fa;
+  }
 
-    <p><strong>🪑 Seats:</strong> <%= @ride.available_seats %> total 
-      🔒 <%= @ride.spots_taken %> taken 
-      ✅ <%= @ride.seats_remaining %> remaining
-    </p>
+  .ride-form-container {
+    max-width: 500px;
+    margin: 80px auto;
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+  }
 
-    <p><strong>💰 Price:</strong> $<%= @ride.price %></p>
+  .ride-form-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
 
-    <% if @ride.image.attached? %>
-      <p><strong>📸 Image:</strong></p>
-      <%= image_tag @ride.image.variant(resize_to_limit: [400, 300]), style: "margin-top: 8px;" %>
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  .form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
+  .form-actions {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .form-actions input {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .error-box {
+    background-color: #ffe0e0;
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #a94442;
+  }
+
+  .error-box ul {
+    margin-top: 8px;
+    padding-left: 20px;
+  }
+</style>
+
+<div class="ride-form-container">
+  <h2>🚘 Post a New Ride</h2>
+
+  <%= form_with model: @ride, local: true, html: { multipart: true } do |f| %>
+    <% if @ride.errors.any? %>
+      <div class="error-box">
+        <strong><%= pluralize(@ride.errors.count, "error") %> prevented this ride from being saved:</strong>
+        <ul>
+          <% @ride.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
 
-    <p><strong>Posted by:</strong> <%= @ride.user&.email || "Unknown" %></p>
-    <p><strong>Notes:</strong> <%= @ride.notes.presence || "None" %></p>
-  </div>
+    <div class="form-group">
+      <%= f.label :origin, "From" %>
+      <%= f.select :origin, ["MPP", "MILA", "Parkline", "73 East", "Harper", "Gleacher"], prompt: "Select Origin", required: true %>
+    </div>
 
-  <hr style="margin: 24px 0;">
+    <div class="form-group">
+      <%= f.label :destination, "To" %>
+      <%= f.select :destination, ["MPP", "MILA", "Parkline", "73 East", "Harper", "Gleacher"], prompt: "Select Destination", required: true %>
+    </div>
 
-  <h3 style="margin-bottom: 10px;">👥 Passengers</h3>
-  <ul style="padding-left: 20px;">
-    <% if @ride.passengers.any? %>
-      <% @ride.passengers.each do |p| %>
-        <li><%= p.email %></li>
-      <% end %>
-    <% else %>
-      <li>No passengers yet.</li>
-    <% end %>
-  </ul>
+    <div class="form-group">
+      <%= f.label :departure_time, "Departure Time" %>
+      <%= f.datetime_select :departure_time, required: true %>
+    </div>
 
-  <% if user_signed_in? %>
-    <div style="margin-top: 24px;">
-      <% if @ride.passengers.include?(current_user) %>
-        <%= button_to "Leave Ride", ride_participant_path(ride_id: @ride.id), method: :delete, style: "padding: 10px 16px; background-color: #ffc107; color: black; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
-      <% elsif @ride.seats_remaining > 0 %>
-        <%= button_to "Join Ride", ride_participants_path(ride_id: @ride.id), method: :post, style: "padding: 10px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
-      <% else %>
-        <p style="color: red; font-weight: bold;">No seats remaining.</p>
-      <% end %>
+    <div class="form-group">
+      <%= f.label :available_seats, "Number of Seats" %>
+      <%= f.number_field :available_seats, min: 1, required: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :price, "Price (USD)" %>
+      <%= f.number_field :price, min: 0, step: 0.01, required: false %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :image, "Upload Ride Image" %>
+      <%= f.file_field :image, direct_upload: true %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :notes, "Notes (optional)" %>
+      <%= f.text_area :notes, placeholder: "e.g. Please be on time, bring small bags only" %>
+    </div>
+
+    <div class="form-actions">
+      <%= f.submit "Post Ride" %>
     </div>
   <% end %>
 </div>

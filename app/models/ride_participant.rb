@@ -22,29 +22,14 @@ class RideParticipant < ApplicationRecord
   belongs_to :ride
   belongs_to :user
 
-  # Validate if seats are available before creating a participant
-  validate :ride_has_seats, on: :create
-
-  # Callbacks to update seat count
-  after_create :decrement_ride_seats
-  after_destroy :increment_ride_seats
+  # Only validation needed is checking remaining seats based on current passengers
+  validate :ride_has_room, on: :create
 
   private
 
-  # Check if ride has available seats
-  def ride_has_seats
-    if ride.available_seats <= 0
-      errors.add(:ride, "has no available seats.")
+  def ride_has_room
+    if ride.passengers.count >= ride.available_seats
+      errors.add(:ride, "is full.")
     end
-  end
-
-  # Decrease available seats by 1 when a user joins
-  def decrement_ride_seats
-    ride.update(available_seats: ride.available_seats - 1)
-  end
-
-  # Increase available seats by 1 when a user leaves
-  def increment_ride_seats
-    ride.update(available_seats: ride.available_seats + 1)
   end
 end

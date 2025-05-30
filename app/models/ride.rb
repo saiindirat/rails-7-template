@@ -16,18 +16,29 @@
 #  updated_at      :datetime         not null
 #  user_id         :integer
 #
+
 class Ride < ApplicationRecord
   belongs_to :user
+
   has_many :ride_participants, dependent: :destroy
   has_many :passengers, through: :ride_participants, source: :user
 
   has_one_attached :image
 
+  # VALIDATIONS
+  validates :origin, :destination, :departure_time, :available_seats, presence: true
+  validates :available_seats, numericality: { greater_than: 0 }
+
+  # METHODS
+
+  # Number of users who have joined
   def spots_taken
     passengers.count
   end
 
+  # Remaining = Total - Taken
   def seats_remaining
+    return 0 if available_seats.nil?
     [available_seats - spots_taken, 0].max
   end
 end
