@@ -12,12 +12,12 @@
 
   <div class="form-group">
     <%= form.label :origin %>
-    <%= form.text_field :origin, class: "form-control", required: true %>
+    <%= form.select :origin, ["MPP", "MILA", "Parkline", "73 East", "Harper", "Gleacher"], {}, class: "form-control", required: true %>
   </div>
 
   <div class="form-group">
     <%= form.label :destination %>
-    <%= form.text_field :destination, class: "form-control", required: true %>
+    <%= form.select :destination, ["MPP", "MILA", "Parkline", "73 East", "Harper", "Gleacher"], {}, class: "form-control", required: true %>
   </div>
 
   <div class="form-group">
@@ -31,11 +31,19 @@
   </div>
 
   <div class="form-group">
-    <%= form.label :notes %>
-    <%= form.text_area :notes, class: "form-control", placeholder: "Optional info like pickup point, luggage, etc." %>
+    <%= form.label :price %>
+    <%= form.number_field :price, class: "form-control", step: 0.01, required: true %>
   </div>
 
-  <div class="form-group mt-3">
-    <%= form.submit "Post Ride", class: "btn btn-primary" %>
+  <div class="form-group">
+    <%= form.label :image, "Upload Image" %>
+    <%= form.file_field :image, class: "form-control" %>
   </div>
+
+  <div class="form-group">
+    <%= form.label :notes %>
+    <%= form.text_area :notes, class: "form-control", placeholder: "Pickup point, luggage info, etc." %>
+  </div>
+
+  <%= form.submit "Post Ride", class: "btn btn-primary mt-3" %>
 <% end %>

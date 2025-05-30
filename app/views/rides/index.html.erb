@@ -1,4 +1,4 @@
-<!-- Google Font -->
+<!-- Google Font & Styling -->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
 
@@ -22,6 +22,7 @@
   h1 {
     font-size: 2.4rem;
     margin-bottom: 24px;
+    text-align: center;
   }
 
   .top-bar {
@@ -58,24 +59,29 @@
     width: 100%;
     border-collapse: collapse;
     font-size: 1rem;
+    margin-top: 16px;
   }
 
   th, td {
     padding: 12px;
     border: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
   }
 
   th {
     background-color: #f9f9f9;
-    text-align: center;
-  }
-
-  td {
-    text-align: center;
   }
 
   tr:hover {
     background-color: #f2f2f2;
+  }
+
+  .ride-image {
+    max-width: 80px;
+    max-height: 60px;
+    object-fit: cover;
+    border-radius: 6px;
   }
 </style>
 
@@ -84,9 +90,7 @@
   <% if user_signed_in? %>
     <div class="top-bar">
       <div>👋 Welcome, <strong><%= current_user.name.presence || current_user.email %></strong></div>
-      <div>
-        <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
-      </div>
+      <%= link_to "Logout", destroy_user_session_path, method: :delete, class: "btn btn-danger" %>
     </div>
   <% end %>
 
@@ -104,9 +108,11 @@
         <th>📍 From</th>
         <th>🏁 To</th>
         <th>🕒 Departure</th>
+        <th>💵 Price</th>
         <th>🪑 Total</th>
         <th>✅ Taken</th>
         <th>🟢 Remaining</th>
+        <th>🖼️ Image</th>
         <th>🔎 View</th>
       </tr>
     </thead>
@@ -116,9 +122,17 @@
           <td><%= ride.origin.presence || "—" %></td>
           <td><%= ride.destination.presence || "—" %></td>
           <td><%= ride.departure_time.strftime("%A %d %b, %I:%M %p") %></td>
+          <td><%= number_to_currency(ride.price || 0, precision: 2) %></td>
           <td><%= ride.available_seats %></td>
-          <td><%= ride.spots_taken %></td>
-          <td><%= ride.seats_remaining %></td>
+          <td><%= ride.spots_taken %> taken</td>
+          <td><%= "#{ride.seats_remaining} remaining" %></td>
+          <td>
+            <% if ride.image.attached? %>
+              <%= image_tag ride.image, class: "ride-image" %>
+            <% else %>
+              <em>—</em>
+            <% end %>
+          </td>
           <td>
             <%= link_to "View", ride_path(ride), class: "btn btn-success", style: "padding: 6px 12px;" %>
           </td>

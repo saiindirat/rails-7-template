@@ -1,6 +1,6 @@
 class RidesController < ApplicationController
-  before_action :authenticate_user!, only: [:new, :create, :destroy]
-  before_action :set_ride, only: [:show, :destroy]
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+  before_action :set_ride, only: [:show, :edit, :update, :destroy]
 
   def index
     @rides = Ride.order(departure_time: :asc)
@@ -15,9 +15,12 @@ class RidesController < ApplicationController
 
   def create
     @ride = Ride.new(ride_params)
-    @ride.user_id = current_user.id
+    @ride.user = current_user
 
     if @ride.save
+      # Optional: Automatically add the poster as a passenger
+      # @ride.ride_participants.create(user: current_user)
+
       redirect_to @ride, notice: "Ride posted successfully!"
     else
       flash.now[:alert] = "Ride failed to post."
@@ -25,8 +28,21 @@ class RidesController < ApplicationController
     end
   end
 
+  def edit
+    redirect_to rides_path, alert: "Not authorized." unless @ride.user == current_user
+  end
+
+  def update
+    if @ride.user == current_user && @ride.update(ride_params)
+      redirect_to @ride, notice: "Ride updated!"
+    else
+      flash.now[:alert] = "Ride could not be updated."
+      render :edit
+    end
+  end
+
   def destroy
-    if @ride.user_id == current_user.id
+    if @ride.user == current_user
       @ride.destroy
       redirect_to rides_path, notice: "Ride deleted."
     else
@@ -46,8 +62,10 @@ class RidesController < ApplicationController
       :destination,
       :departure_time,
       :available_seats,
-      :map_url,       # <--- added this
-      :notes
+      :notes,
+      :map_url,
+      :price,
+      :image
     )
   end
 end

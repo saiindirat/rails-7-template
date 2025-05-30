@@ -3,13 +3,19 @@ class RideParticipantsController < ApplicationController
 
   def create
     ride = Ride.find(params[:ride_id])
-    current_user.ride_participants.create(ride: ride)
+
+    unless ride.passengers.include?(current_user)
+      ride.ride_participants.create(user: current_user) if ride.seats_remaining > 0
+    end
+
     redirect_to ride_path(ride), notice: "You joined the ride!"
   end
 
   def destroy
-    ride_participant = current_user.ride_participants.find_by(ride_id: params[:ride_id])
-    ride_participant.destroy if ride_participant.present?
-    redirect_to ride_path(params[:ride_id]), notice: "You left the ride."
+    ride = Ride.find(params[:ride_id])
+    ride_participant = ride.ride_participants.find_by(user_id: current_user.id)
+    ride_participant&.destroy
+
+    redirect_to ride_path(ride), notice: "You left the ride."
   end
 end
