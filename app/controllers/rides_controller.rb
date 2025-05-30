@@ -6,8 +6,7 @@ class RidesController < ApplicationController
     @rides = Ride.order(departure_time: :asc)
   end
 
-  def show
-  end
+  def show; end
 
   def new
     @ride = Ride.new
@@ -18,9 +17,6 @@ class RidesController < ApplicationController
     @ride.user = current_user
 
     if @ride.save
-      # Optional: Automatically add the poster as a passenger
-      # @ride.ride_participants.create(user: current_user)
-
       redirect_to @ride, notice: "Ride posted successfully!"
     else
       flash.now[:alert] = "Ride failed to post."
@@ -29,14 +25,14 @@ class RidesController < ApplicationController
   end
 
   def edit
-    redirect_to rides_path, alert: "Not authorized." unless @ride.user == current_user
+    redirect_to ride_path(@ride), alert: "Not authorized" unless @ride.user == current_user
   end
 
   def update
     if @ride.user == current_user && @ride.update(ride_params)
-      redirect_to @ride, notice: "Ride updated!"
+      redirect_to @ride, notice: "Ride updated successfully!"
     else
-      flash.now[:alert] = "Ride could not be updated."
+      flash.now[:alert] = "Update failed."
       render :edit
     end
   end
@@ -57,15 +53,6 @@ class RidesController < ApplicationController
   end
 
   def ride_params
-    params.require(:ride).permit(
-      :origin,
-      :destination,
-      :departure_time,
-      :available_seats,
-      :notes,
-      :map_url,
-      :price,
-      :image
-    )
+    params.require(:ride).permit(:origin, :destination, :departure_time, :available_seats, :notes, :price, :map_url, :image)
   end
 end

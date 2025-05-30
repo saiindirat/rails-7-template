@@ -1,35 +1,83 @@
-<!-- app/views/rides/_form.html.erb -->
-
-<!-- Google Fonts & Styling (if not already included elsewhere) -->
+<!-- Google Fonts & Styling -->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f7fa;
+  }
+
   .ride-form-container {
-    max-width: 500px;
+    max-width: 600px;
     margin: 80px auto;
     background-color: #fff;
     padding: 40px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.07);
-    font-family: 'Inter', sans-serif;
+  }
+
+  .ride-form-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 24px;
   }
 
   .form-group {
     margin-bottom: 18px;
   }
 
+  .form-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+
   .form-actions {
     text-align: center;
     margin-top: 30px;
   }
+
+  .form-actions input {
+    background-color: #28a745;
+    color: white;
+    font-weight: bold;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .error-box {
+    background-color: #ffe0e0;
+    padding: 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    color: #a94442;
+  }
+
+  .error-box ul {
+    margin-top: 8px;
+    padding-left: 20px;
+  }
 </style>
 
 <div class="ride-form-container">
-  <h2><%= @ride.persisted? ? "✏️ Edit Ride" : "🚘 Post a New Ride" %></h2>
+  <h2>✏️ Edit Your Ride</h2>
 
   <%= form_with model: @ride, local: true, html: { multipart: true } do |f| %>
     <% if @ride.errors.any? %>
       <div class="error-box">
-        <strong><%= pluralize(@ride.errors.count, "error") %> prevented this ride from being saved:</strong>
+        <strong><%= pluralize(@ride.errors.count, "error") %> prevented this ride from being updated:</strong>
         <ul>
           <% @ride.errors.full_messages.each do |message| %>
             <li><%= message %></li>
@@ -64,17 +112,17 @@
     </div>
 
     <div class="form-group">
-      <%= f.label :image, "Upload Ride Image" %>
+      <%= f.label :image, "Update Ride Image" %>
       <%= f.file_field :image, direct_upload: true %>
     </div>
 
     <div class="form-group">
       <%= f.label :notes, "Notes (optional)" %>
-      <%= f.text_area :notes, placeholder: "e.g. No luggage, please be on time" %>
+      <%= f.text_area :notes, placeholder: "e.g. No bags or pets please" %>
     </div>
 
     <div class="form-actions">
-      <%= f.submit @ride.persisted? ? "Update Ride" : "Post Ride", class: "btn btn-primary" %>
+      <%= f.submit "Update Ride" %>
     </div>
   <% end %>
 </div>

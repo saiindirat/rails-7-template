@@ -1,10 +1,10 @@
-<div style="max-width: 700px; margin: 40px auto; font-family: sans-serif; padding: 24px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background-color: #fff;">
+<div style="max-width: 700px; margin: 40px auto; font-family: 'Inter', sans-serif; padding: 24px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); background-color: #fff;">
   <h1 style="font-size: 2em; margin-bottom: 20px;">🚗 Ride Details</h1>
 
   <div style="line-height: 1.8; font-size: 1.1em;">
-    <p><strong>From:</strong> <%= @ride.origin %></p>
-    <p><strong>To:</strong> <%= @ride.destination %></p>
-    <p><strong>Departure:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") %></p>
+    <p><strong>From:</strong> <%= @ride.origin.presence || "Not provided" %></p>
+    <p><strong>To:</strong> <%= @ride.destination.presence || "Not provided" %></p>
+    <p><strong>Departure:</strong> <%= @ride.departure_time.strftime("%A %d %b, %I:%M %p") rescue "Not set" %></p>
 
     <p><strong>🪑 Seats:</strong>
       <%= @ride.available_seats %> total
@@ -13,23 +13,25 @@
     </p>
 
     <% if @ride.price.present? %>
-      <p><strong>💰 Price:</strong> $<%= @ride.price %></p>
+      <p><strong>💰 Price:</strong> $<%= number_with_precision(@ride.price, precision: 2) %></p>
     <% end %>
 
-    <p><strong>📸 Ride Image:</strong></p>
     <% if @ride.image.attached? %>
-      <%= image_tag url_for(@ride.image), style: "max-width: 400px; border-radius: 8px; margin-top: 10px;" %>
+      <p><strong>📸 Image:</strong></p>
+      <div style="margin: 12px 0; text-align: center;">
+        <%= image_tag url_for(@ride.image), style: "border-radius: 8px; max-width: 300px; height: auto;" %>
+      </div>
     <% else %>
-      <p><em>No image uploaded.</em></p>
+      <p style="color: #666;"><em>No image uploaded.</em></p>
     <% end %>
 
-    <p><strong>Posted by:</strong> <%= @ride.user.email %></p>
+    <p><strong>Posted by:</strong> <%= @ride.user&.email || "Unknown" %></p>
     <p><strong>Notes:</strong> <%= @ride.notes.presence || "None" %></p>
   </div>
 
   <hr style="margin: 24px 0;">
 
-  <h3>👥 Passengers</h3>
+  <h3 style="font-weight: bold;">👥 Passengers</h3>
   <ul>
     <% if @ride.passengers.any? %>
       <% @ride.passengers.each do |p| %>
@@ -41,16 +43,20 @@
   </ul>
 
   <% if user_signed_in? %>
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 24px; display: flex; gap: 12px; flex-wrap: wrap;">
+      <% if @ride.user == current_user %>
+        <%= link_to "✏️ Edit Ride", edit_ride_path(@ride), class: "btn", style: "background-color: #ffc107; color: black; padding: 10px 16px; border-radius: 6px; font-weight: bold; text-decoration: none;" %>
+      <% end %>
+
       <% if @ride.passengers.include?(current_user) %>
-        <%= button_to "Leave Ride", ride_participant_path(ride_id: @ride.id), method: :delete, class: "btn btn-warning", style: "padding: 10px 16px; background-color: #ffc107; color: black; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
+        <%= button_to "Leave Ride", ride_participant_path(ride_id: @ride.id), method: :delete, class: "btn", style: "background-color: #ffc107; color: black; padding: 10px 16px; border-radius: 6px; font-weight: bold;" %>
       <% elsif @ride.seats_remaining > 0 %>
-        <%= button_to "Join Ride", ride_participants_path(ride_id: @ride.id), method: :post, class: "btn btn-success", style: "padding: 10px 16px; background-color: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;" %>
+        <%= button_to "Join Ride", ride_participants_path(ride_id: @ride.id), method: :post, class: "btn", style: "background-color: #28a745; color: white; padding: 10px 16px; border-radius: 6px; font-weight: bold;" %>
       <% else %>
         <p style="color: red; font-weight: bold;">No seats remaining.</p>
       <% end %>
     </div>
   <% else %>
-    <p><em>Please sign in to join this ride.</em></p>
+    <p style="margin-top: 20px;"><em>Sign in to join or edit this ride.</em></p>
   <% end %>
 </div>
